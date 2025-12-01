@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Login do Funcionário</title>
+
+  <style>
+    /* Fundo moderno com gradiente */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #4d7cff, #6ea8ff);
+      font-family: "Poppins", Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Caixa com efeito vidro */
+    .login-box {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(12px);
+      padding: 40px 35px;
+      width: 380px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      text-align: center;
+      animation: slideIn 0.8s ease forwards;
+      transform: translateY(50px);
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-box h2 {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    /* Inputs estilosos */
+    .login-box input {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    /* Botão moderno */
+    .login-box button {
+      width: 100%;
+      padding: 14px;
+      background: #2f55d4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 15px;
+      transition: 0.25s;
+    }
+
+    .login-box button:hover {
+      background: #2344a5;
+      transform: scale(1.02);
+    }
+
+    /* Link */
+    .link {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #fff;
+      cursor: pointer;
+      display: inline-block;
+      opacity: 0.9;
+      transition: 0.2s;
+    }
+
+    .link:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+    <h2>Entrar no Sistema</h2>
+
+    <input type="email" id="email" placeholder="E-mail do funcionário">
+    <input type="password" id="password" placeholder="Senha">
+
+    <button onclick="login()">Entrar</button>
+
+    <span class="link" onclick="goToRegister()">Não tem conta? Cadastre-se</span>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
+
+      const stored = JSON.parse(localStorage.getItem("funcionarios") || "[]");
+
+      const user = stored.find(f => f.email === email && f.senha === pass);
+
+      if (!user) {
+        alert("Credenciais inválidas!");
+        return;
+      }
+
+      localStorage.setItem("logado", JSON.stringify(user));
+      window.location.href = "index.html";
+    }
+
+    function goToRegister() {
+      window.location.href = "registro.html";
+    }
+  </script>
+
+</body>
+</html>

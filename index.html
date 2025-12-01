@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <script>
+  const usuario = JSON.parse(localStorage.getItem("logado"));
+  if (!usuario) {
+    window.location.href = "login.html";
+  }
+</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bem-Consigo — Sistema de Agendamento</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app" id="appRoot">
+    <header class="app-header" role="banner">
+      <div class="brand" aria-hidden>
+        <img src="logo.png" class="logo" alt="Logo">
+
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="font-size:13px">Usuário: <strong>Administrador</strong></div>
+        <button class="btn" id="openNewBtn" title="Novo agendamento">+ Novo</button>
+      </div>
+    </header>
+
+    <nav class="sidebar" aria-label="Navegação principal">
+      <div class="section-title">Menu</div>
+      <ul role="list" id="mainMenu">
+        <li class="active" data-view="agenda" tabindex="0" role="button">Agenda</li>
+        <li data-view="pacientes" tabindex="0" role="button">Pacientes</li>
+        <li data-view="profissionais" tabindex="0" role="button">Profissionais</li>
+        <li data-view="relatorios" tabindex="0" role="button">Relatórios</li>
+      </ul>
+
+      <div class="section-title">Filtro rápido</div>
+
+      <label style="display:block;margin-bottom:8px">
+        <select id="filterProfessional" class="input" aria-label="Filtrar por profissional">
+          <option value="">Todos os profissionais</option>
+        </select>
+      </label>
+
+      <label style="display:block;margin-bottom:8px">
+        <input id="filterDate" type="date" class="input" aria-label="Filtrar por data" />
+      </label>
+
+      <button class="btn ghost" id="clearFilters">Limpar filtros</button>
+    </nav>
+
+    <main role="main">
+      <section id="view-agenda" class="card view-section">
+        <div class="controls">
+          <input id="search"  class="input" placeholder="Pesquisar por paciente, profissional ou observação" aria-label="Pesquisar" />
+          <select id="statusFilter" class="input" aria-label="Filtrar por status">
+            <option value="">Todos os status</option>
+            <option value="pending">Pendente</option>
+            <option value="confirmed">Confirmado</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+
+          <select id="serviceFilter" class="input" aria-label="Filtrar por serviço">
+            <option value="">Todos os serviços</option>
+          </select>
+
+          <label style="display:block;margin-bottom:8px">
+            <input id="filterDateInline" type="date" class="input" aria-label="Filtrar por data (inline)" />
+          </label>
+
+          <div style="margin-left:auto;display:flex;gap:8px">
+            <button class="btn ghost" id="exportCsv">Exportar CSV</button>
+            <button class="btn" id="printBtn">Imprimir</button>
+          </div>
+        </div>
+
+        <div class="table-wrap" id="listArea">
+          <table aria-live="polite" id="appointmentsTable">
+            <thead>
+              <tr>
+                <th>Data / Hora</th>
+                <th>Paciente</th>
+                <th>Profissional</th>
+                <th>Serviço</th>
+                <th>Status</th>
+                <th>Observações</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Linhas geradas por JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="help">Dica: clique em <em>+ Novo</em> para criar um agendamento. Use os filtros para refinar.</div>
+      </section>
+
+      <section id="view-pacientes" class="card view-section" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div class="section-title-2">Pacientes</div>
+            <div class="muted">Cadastre pacientes e faça busca rápida por CPF.</div>
+          </div>
+          <div>
+            <button class="btn" id="openPatientNew">+ Paciente</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="patientsTable">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Observações</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>
+            Buscar por CPF:
+            <input id="searchCpf" class="input" placeholder="Digite CPF sem pontos" />
+          </label>
+        </div>
+      </section>
+
+      <section id="view-profissionais" class="card view-section" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div class="section-title-2">Profissionais</div>
+            <div class="muted">Cadastre profissionais (nome, especialidade) — serão usados nos agendamentos.</div>
+          </div>
+          <div>
+            <button class="btn" id="openProfessionalNew">+ Profissional</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="professionalsTable">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Especialidade</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-relatorios" class="card view-section" style="display:none">
+        <div class="section-title-2">Relatórios rápidos</div>
+        <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+          <div class="card" style="min-width:220px"><strong id="totalAppts">0</strong><div class="small">Total agendamentos</div></div>
+          <div class="card" style="min-width:220px"><strong id="pendingAppts">0</strong><div class="small">Pendentes</div></div>
+          <div class="card" style="min-width:220px"><strong id="confirmedAppts">0</strong><div class="small">Confirmados</div></div>
+          <div class="card" style="min-width:220px"><strong id="cancelledAppts">0</strong><div class="small">Cancelados</div></div>
+        </div>
+      </section>
+
+      <footer style="margin-top:20px">
+        Sistema Bem-Consigo — Serviços disponíveis: Terapia, Nutrição, Psicologia, Consulta Geral, Fisioterapia.
+      </footer>
+    </main>
+  </div>
+
+  <div id="modal"
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true">
+  <div class="modal"
+  role="document"
+  aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Novo agendamento</h3>
+      <form id="modalForm">
+        <div id="modalFields"></div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button type="button" class="btn ghost" id="cancelBtn">Cancelar</button>
+          <button type="submit" class="btn" id="saveBtn">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="loading"
+  class="loading"
+  style="display:none"
+  aria-hidden="true">
+  <div class="loader"
+  aria-label="Carregando"
+  ></div>
+    <div>Carregando...</div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

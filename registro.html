@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Cadastro de Funcionário</title>
+
+  <style>
+    body {
+      background: #4d7cff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+
+    .register-box {
+      background: #fff;
+      width: 400px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .register-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .register-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .register-box button {
+      width: 100%;
+      padding: 12px;
+      background: #4d7cff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .register-box button:hover {
+      background: #3b63d8;
+    }
+
+    .link {
+      margin-top: 12px;
+      font-size: 14px;
+      display: block;
+      color: #4d7cff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="register-box">
+    <h2>Cadastrar Funcionário</h2>
+
+    <input type="text" id="nome" placeholder="Nome completo">
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="senha" placeholder="Senha">
+
+    <button onclick="registrar()">Cadastrar</button>
+
+    <span class="link" onclick="goLogin()">Já tenho conta</span>
+  </div>
+
+  <script>
+    function registrar() {
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      if (!nome || !email || !senha) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      let funcionarios = JSON.parse(localStorage.getItem("funcionarios") || "[]");
+
+      if (funcionarios.some(f => f.email === email)) {
+        alert("Este e-mail já está cadastrado!");
+        return;
+      }
+
+      funcionarios.push({ nome, email, senha });
+      localStorage.setItem("funcionarios", JSON.stringify(funcionarios));
+
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "login.html";
+    }
+
+    function goLogin() {
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>
