@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -11,16 +12,29 @@
         const usuario = JSON.parse(localStorage.getItem("logado") || "null");
         if (!usuario) {
           window.location.href = "login.html";
-             } else {
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const usuario = JSON.parse(localStorage.getItem("logado") || "null");
+
+  if (!usuario) {
+    if (!window.location.pathname.includes("login.html")) {
+      window.location.href = "login.html";
+    }
+  } else {
+
     if (window.location.pathname.includes("login.html")) {
-      window.location.href = "index.html"; 
+
+      window.location.href = "index.html";
+    } else {
+      const userDisplay = document.getElementById("userDisplay");
+      if (userDisplay) userDisplay.textContent = usuario.nome || "Administrador";
+
+      const userDisplayHeader = document.getElementById("userDisplayHeader");
+      if (userDisplayHeader) userDisplayHeader.textContent = usuario.nome || "Administrador";
     }
   }
 });
-        } else {
-          const userDisplay = document.getElementById("userDisplay");
-          if(userDisplay) userDisplay.textContent = usuario.nome || "Administrador";
-        }
+</script>
       });
     </script>
 </head>
