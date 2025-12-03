@@ -1,7 +1,11 @@
 (function () {
 
-  const STORAGE_KEY = "bc_appointments_v1";
+  const usuario = JSON.parse(localStorage.getItem("logado"));
+  if (!usuario) {
+    window.location.href = "login.html"; 
+  }
 
+  const STORAGE_KEY = "bc_appointments_v1";
 
   function qs(sel) { return document.querySelector(sel); }
   function qsa(sel) { return Array.from(document.querySelectorAll(sel)); }
@@ -28,7 +32,6 @@
     const span = input.nextElementSibling;
     if (span && span.className === "msg-erro") span.textContent = "";
   }
-
   function validarObrigatorio(input) {
     if (!input || input.value.trim() === "") {
       marcarErro(input, "Campo obrigatório");
@@ -62,14 +65,16 @@
     limparErro(input);
     return true;
   }
-
+  function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#39;" }[m]));
+  }
 
   function salvarAgendamento(obj) {
     const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     arr.push(obj);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
   }
-
 
   function atualizarTabelaAgendamentos() {
     const tbody = qs("#appointmentsTable tbody") || qs("#appointmentsTableBody") || null;
@@ -94,15 +99,9 @@
     });
   }
 
-  function escapeHtml(s) {
-    if (s == null) return "";
-    return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": "&#39;" }[m]));
-  }
-
   function ensureAppointmentForm() {
     let form = qs("#appointmentForm");
     if (form) return form;
-
 
     form = createEl("div", {
       id: "appointmentForm",
@@ -139,10 +138,8 @@
   }
 
   function findNovoButton() {
-
     const byId = qs("#openAppointmentNew");
     if (byId) return byId;
-
 
     const btns = qsa("button, a");
     const found = btns.find(b => (b.textContent || "").trim() === "+ Novo" || (b.textContent || "").trim().toLowerCase() === "+ novo");
@@ -151,15 +148,21 @@
     const plusBtn = btns.find(b => (b.textContent || "").includes("+"));
     if (plusBtn) return plusBtn;
 
-
     return null;
+  }
+
+  function mostrarUsuarioLogado() {
+    const span = qs("#userDisplay");
+    if (span && usuario) {
+      span.textContent = usuario.nome || usuario.email || "Usuário";
+    }
   }
 
   function init() {
     try {
+      mostrarUsuarioLogado();
       const btn = findNovoButton();
       const form = ensureAppointmentForm();
-
 
       const inputPaciente = qs("#apptPaciente");
       const inputProf = qs("#apptProfissional");
@@ -168,28 +171,10 @@
       const btnSalvar = qs("#saveAppointment");
       const btnCancelar = qs("#cancelAppointment");
       const msgSucesso = qs("#msgAgendamentoSucesso");
-
-
       const inputServico = qs("#apptServico") || qs("#apptServiço");
-
 
       if (btn) {
         btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          form.style.display = "block";
-          msgSucesso.style.display = "none";
-
-          setTimeout(() => inputPaciente && inputPaciente.focus(), 80);
-        });
-      } else {
-
-        const fallback = createEl("button", { id: "openAppointmentNewFallback", class: "btn" }, "+ Novo");
-        fallback.style.position = "fixed";
-        fallback.style.right = "18px";
-        fallback.style.bottom = "18px";
-        fallback.style.zIndex = 9999;
-        document.body.appendChild(fallback);
-        fallback.addEventListener("click", (e) => {
           e.preventDefault();
           form.style.display = "block";
           msgSucesso.style.display = "none";
@@ -197,15 +182,12 @@
         });
       }
 
-
       btnCancelar && btnCancelar.addEventListener("click", (ev) => {
         ev.preventDefault();
         form.style.display = "none";
-
         [inputPaciente, inputProf, inputData, inputHora, inputServico].forEach(i => i && (i.value = "", limparErro(i)));
         msgSucesso.style.display = "none";
       });
-
 
       btnSalvar && btnSalvar.addEventListener("click", (ev) => {
         ev.preventDefault();
@@ -215,7 +197,6 @@
         if (!validarDataNaoPassada(inputData)) valido = false;
         if (!validarHora(inputHora)) valido = false;
         if (!validarObrigatorio(inputServico)) valido = false;
-
         if (!valido) return;
 
         const novo = {
@@ -232,18 +213,12 @@
         msgSucesso.textContent = "Agendamento criado com sucesso!";
         msgSucesso.style.display = "block";
 
-
         [inputPaciente, inputProf, inputData, inputHora, inputServico].forEach(i => { if (i) i.value = ""; limparErro(i); });
-
 
         atualizarTabelaAgendamentos();
 
-
-        setTimeout(() => {
-          form.style.display = "none";
-        }, 1200);
+        setTimeout(() => form.style.display = "none", 1200);
       });
-
 
       document.addEventListener("click", function (e) {
         const del = e.target.closest(".btn-delete");
@@ -286,5 +261,4 @@
   } else {
     init();
   }
-
 })();
