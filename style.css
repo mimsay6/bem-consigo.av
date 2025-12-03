@@ -1,4 +1,4 @@
-/* RESET / BASE */
+
 * {
   margin: 0;
   padding: 0;
@@ -12,7 +12,6 @@ html, body {
 }
 a { color: inherit; text-decoration: none; }
 
-/* LAYOUT DA APP */
 .app { 
   display: grid; 
   grid-template-columns: 260px 1fr; 
@@ -77,7 +76,6 @@ nav.sidebar .section-title {
   margin-bottom: 6px;
 }
 
-/* CONTEÚDO PRINCIPAL */
 main { 
   padding: 24px; 
 }
@@ -107,7 +105,7 @@ main {
   color: #3730a3;
 }
 
-/* CAMPOS PADRÃO */
+
 .input, select, textarea {
   padding: 8px 10px;
   border-radius: 8px;
@@ -115,7 +113,7 @@ main {
   background: white;
 }
 
-/* Filtros */
+
 .filters input {
   width: 220px;
   padding: 8px 10px;
@@ -133,7 +131,7 @@ input[type="time"] {
   width: 100%;
 }
 
-/* CARD */
+
 .card {
   background: white;
   padding: 16px;
@@ -141,7 +139,6 @@ input[type="time"] {
   box-shadow: 0 6px 18px rgba(16,24,40,0.06);
 }
 
-/* TABELA */
 .table-wrap { overflow: auto; border-radius: 10px; }
 table { width: 100%; border-collapse: collapse; }
 
@@ -173,7 +170,6 @@ td small {
 
 .actions button { margin-right: 6px; }
 
-/* MODAL */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -202,7 +198,6 @@ td small {
   gap: 10px; 
 }
 
-/* LOADING */
 .loading {
   position: fixed;
   inset: 0;
@@ -228,7 +223,6 @@ td small {
   to { transform: rotate(360deg); } 
 }
 
-/* RESPONSIVO */
 @media (max-width: 880px) {
   .app { grid-template-columns: 1fr; }
   nav.sidebar { 
@@ -258,4 +252,35 @@ footer {
   color: #7f1d1d; 
   border-radius: 6px; 
   padding: 6px; 
+}
+.campo-erro { border: 2px solid #ff3b3b !important; }
+.msg-erro { color: #ff3b3b; font-size:12px; display:block; margin-top:6px; }
+.msg-success { background:#4caf50; color:#fff; padding:8px; border-radius:6px; }
+
+@media (max-width: 1024px) {
+  .app { grid-template-columns: 200px 1fr; }
+  nav.sidebar { padding: 16px; }
+  .controls { flex-wrap: wrap; }
+}
+
+@media (max-width: 880px) {
+  .app { grid-template-columns: 1fr; }
+  nav.sidebar { 
+    display: flex; 
+    overflow-x: auto; 
+    padding: 12px; 
+    gap: 8px; 
+  }
+  .controls { flex-direction: column; gap: 12px; }
+  table { min-width: 100%; }
+}
+
+@media (max-width: 600px) {
+  header.app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .controls input, .controls select { width: 100%; }
+  .tabl0e-wrap { overflow-x: auto; }
 }
