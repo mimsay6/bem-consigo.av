@@ -1,42 +1,23 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Bem-Consigo — Sistema de Agendamento</title>
-    <link rel="stylesheet" href="style.css" />
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const usuario = JSON.parse(localStorage.getItem("logado") || "null");
-        if (!usuario) {
-          window.location.href = "login.html";
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bem-Consigo — Sistema de Agendamento</title>
+  <link rel="stylesheet" href="style.css" />
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const usuario = JSON.parse(localStorage.getItem("logado") || "null");
+    const usuario = JSON.parse(localStorage.getItem("logado") || "null");
 
-  if (!usuario) {
-    if (!window.location.pathname.includes("login.html")) {
-      window.location.href = "login.html";
-    }
-  } else {
-
-    if (window.location.pathname.includes("login.html")) {
-
-      window.location.href = "index.html";
+    if (!usuario) {
+      if (!window.location.pathname.includes("login.html")) {
+        window.location.href = "login.html";
+      }
     } else {
-      const userDisplay = document.getElementById("userDisplay");
-      if (userDisplay) userDisplay.textContent = usuario.nome || "Administrador";
-
-      const userDisplayHeader = document.getElementById("userDisplayHeader");
-      if (userDisplayHeader) userDisplayHeader.textContent = usuario.nome || "Administrador";
+      if (window.location.pathname.includes("login.html")) {
+        window.location.href = "index.html";
+      }
     }
-  }
-});
-</script>
-      });
-    </script>
+  </script>
 </head>
 
 <body>
@@ -85,17 +66,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   <main role="main">
 
+    <!-- AGENDA -->
     <section id="view-agenda" class="card view-section">
       <div class="controls">
         <input id="search" class="input" placeholder="Pesquisar…" />
-
         <select id="statusFilter" class="input">
           <option value="">Todos os status</option>
           <option value="pending">Pendente</option>
           <option value="confirmed">Confirmado</option>
           <option value="cancelled">Cancelado</option>
         </select>
-
         <select id="serviceFilter" class="input">
           <option value="">Todos os serviços</option>
         </select>
@@ -164,7 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </label>
       </div>
     </section>
-
     <section id="view-profissionais" class="card view-section" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div>
@@ -191,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     </section>
 
+    <!-- RELATÓRIOS -->
     <section id="view-relatorios" class="card view-section" style="display:none">
       <div class="section-title-2">Relatórios rápidos</div>
       <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
@@ -211,6 +191,18 @@ document.addEventListener("DOMContentLoaded", () => {
   <div class="loader" aria-label="Carregando"></div>
   <div>Carregando...</div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const usuario = JSON.parse(localStorage.getItem("logado") || "null");
+    if (usuario) {
+      const userDisplay = document.getElementById("userDisplay");
+      const userDisplayHeader = document.getElementById("userDisplayHeader");
+      if (userDisplay) userDisplay.textContent = usuario.nome || "Administrador";
+      if (userDisplayHeader) userDisplayHeader.textContent = usuario.nome || "Administrador";
+    }
+  });
+</script>
 
 <script src="app.js" defer></script>
 </body>
